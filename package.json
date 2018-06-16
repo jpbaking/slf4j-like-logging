@@ -1,0 +1,35 @@
+{
+  "name": "slf4j-like-logging",
+  "version": "1.0.0",
+  "description": "Emulating Simple Logging Facade for Java (SLF4J)",
+  "main": "src/main/index.js",
+  "scripts": {
+    "test": "mocha --recursive src/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpbaking/slf4j-like-logging.git"
+  },
+  "keywords": [
+    "jpbaking",
+    "slf4j",
+    "slf4n",
+    "logger",
+    "logging",
+    "log",
+    "logfactory",
+    "loggerfactory"
+  ],
+  "author": "Joseph Baking <no-reply@nowhere.org> (https://github.com/jpbaking)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jpbaking/slf4j-like-logging/issues"
+  },
+  "homepage": "https://github.com/jpbaking/slf4j-like-logging#readme",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1"
+  }
+}
