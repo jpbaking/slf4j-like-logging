@@ -3,7 +3,19 @@
 describe('No exceptions please.', function () {
 
   const LoggerFactory = require('../main/index')({
-    level: 'trace'
+    layout: ':c[bold]:c[level][:level]:c[reset] :timestamp :c[bold]:c[white]:logger:c[reset]:c[dim]@:hostname (:pid):c[reset]: :message:c[level]:error',
+    errorIndenter: '     | ',
+    level: 'trace',
+    colors: {
+      fatal: 'cyan',
+      error: 'green',
+      warn: 'white',
+      info: 'yellow',
+      debug: 'red',
+      trace: 'magenta'
+    },
+    stream: 'stderr',
+    terminateOnFail: 'true'
   });
 
   const log = LoggerFactory.getLogger('test:dummy');

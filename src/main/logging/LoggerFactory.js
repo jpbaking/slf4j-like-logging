@@ -28,16 +28,14 @@ module.exports = class LoggerFactory {
       level: Level[_(() => config.level, 'INFO').toUpperCase()] || Level.INFO,
       colors: {
         enabled: isColorEnabled,
-        FATAL: toLevelColor(config, 'FATAL', 'magenta', isColorEnabled, stream, true),
-        ERROR: toLevelColor(config, 'ERROR', 'red', isColorEnabled, stream, true),
-        WARN: toLevelColor(config, 'WARN', 'yellow', isColorEnabled, stream),
-        INFO: toLevelColor(config, 'INFO', 'white', isColorEnabled, stream),
-        DEBUG: toLevelColor(config, 'DEBUG', 'green', isColorEnabled, stream),
-        TRACE: toLevelColor(config, 'TRACE', 'cyan', isColorEnabled, stream)
+        FATAL: toLevelColor(config, 'fatal', 'magenta', isColorEnabled, stream, true),
+        ERROR: toLevelColor(config, 'error', 'red', isColorEnabled, stream, true),
+        WARN: toLevelColor(config, 'warn', 'yellow', isColorEnabled, stream),
+        INFO: toLevelColor(config, 'info', 'white', isColorEnabled, stream),
+        DEBUG: toLevelColor(config, 'debug', 'green', isColorEnabled, stream),
+        TRACE: toLevelColor(config, 'trace', 'cyan', isColorEnabled, stream)
       },
       stream: stream,
-      timeout: Number(_(() => config.timeout, '60000').toLowerCase()) || 60000,
-      terminateOnTimeout: toBoolean(() => config.terminateOnTimeout, true) ? terminate : doNothing,
       terminateOnFail: toBoolean(() => config.terminateOnFail, true) ? terminate : doNothing
     }
   }
