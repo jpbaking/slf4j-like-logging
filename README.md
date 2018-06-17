@@ -1,4 +1,6 @@
-# slf4j-like-logging
+# slf4n-logging
+
+## Simple Logging Facade for NodeJS
 
 Emulating Simple Logging Facade for Java (SLF4J)
 
@@ -10,40 +12,47 @@ Yes, logger functions' implementation for writing to streams won't be a blocker.
 
 Every log method returns a [bluebird `Promise`](https://www.npmjs.com/package/bluebird) -- for those that want to "wait" for logs to be written before proceding to next lines.
 
-_[slf4j-like-logging](https://github.com/jpbaking/slf4j-like-logging) by [jpbaking](https://github.com/jpbaking)_
+_[slf4n-logging](https://github.com/jpbaking/slf4n-logging) by [jpbaking](https://github.com/jpbaking)_
 
-## Basic Usage
+## How to use?
 
-Simply `require('slf4j-like-logging')` from your "main" (entrypoint) `.js` then all of other modules would get the global `LoggerFactory`.
+### Basic Usage
+
+Simply `require('slf4n-logging')` from your "main" (entrypoint) `.js` then all of other modules would get the global `LoggerFactory`.
 
 Sample File #1: `app.js`
 ```javascript
-require('slf4j-like-logging');
+require('slf4n-logging');
 ```
 
 Sample File #2: `api/controller/health.js`
 ```javascript
 const log = LoggerFactory.getLogger('app:health');
 // ...
-log.debug('some debug line');
+log.debug('some debug line %s', aStringVariable);
+log.debug('some debug line %o', anObjectOrArray);
 // ...
 log.error('some error line', error);
 ```
 
-## Safe Usage
+#### Formatting in `log.{level}([data][, ...args])`
 
-Some do not like adding anything to `global.*`. If you're one of those, you may use `require('slf4j-like-logging/safe')` instead:
+As shown in the example above, syntax for log-level functions exactly the same as [`require('util').format(format[, ...args])`](https://nodejs.org/api/util.html#util_util_format_format_args) and [`console.log([data][, ...args])`](https://nodejs.org/api/console.html#console_console_log_data_args).
+
+### Safe Usage
+
+Some do not like adding anything to `global.*`. If you're one of those, you may use `require('slf4n-logging/safe')` instead:
 
 Sample File: `api/helpers/UltimateHelper.js`
 ```javascript
-const log = require('slf4j-like-logging/safe')('app:ultimate');
+const log = require('slf4n-logging/safe')('app:ultimate');
 // ...
 log.info('some info line');
 // ...
 log.warn('some warn line', error);
 ```
 
-## "Manual" Usage
+### "Manual" Usage
 
 Sample `loggerConfig` object:
 ```javascript
@@ -70,9 +79,9 @@ Sample `global.LoggerFactory` _(unsafe)_:
 ```javascript
 // logger factory
 // unsafe usage (`global.LoggerFactory` is set)
-require('slf4j-like-logging/json')(loggerConfig, false);
+require('slf4n-logging/json')(loggerConfig, false);
 // default is `false` for `safe` (second argument)
-require('slf4j-like-logging/json')(loggerConfig);
+require('slf4n-logging/json')(loggerConfig);
 
 // actual logger
 const log = LoggerFactory.getLogger('app:something');
@@ -85,7 +94,7 @@ log.error('some error line', error);
 Sample **safe** usage _(returns a `LoggerFactory`; same one that would've been set to `global.*`)_:
 ```javascript
 // logger factory
-const LoggerFactory = require('slf4j-like-logging/json')(loggerConfig, true);
+const LoggerFactory = require('slf4n-logging/json')(loggerConfig, true);
 
 // actual logger
 const log = LoggerFactory.getLogger('app:something');
@@ -95,11 +104,60 @@ log.trace('some trace line');
 log.fatal('some fatal line', error);
 ```
 
+## The `log.{level}([data][, ...args])` functions
+
+As described earlier, just use `log.{level}([data][, ...args])` functions very much like how you'd use [`console.log([data][, ...args])`](https://nodejs.org/api/console.html#console_console_log_data_args).
+
+```javascript
+const log = LoggerFactory.getLogger('app:something');
+// ...
+try {
+  log.trace('something trace %s', aString);
+  log.debug('something debug %o', anObject);
+  log.info('something info');
+  log.warn('something warn %d', aNumber);
+  // ...
+} catch (error) {
+  log.fatal('something fatal', error);
+  log.error('something error', error);
+}
+```
+
+Here's a list of available `log.{level}([data][, ...args])` functions:
+
+- **`log.fatal([data][, ...args])`** - log something at fatal level
+- **`log.error([data][, ...args])`** - log something at error level
+- **`log.warn([data][, ...args])`** - log something at warn level
+- **`log.info([data][, ...args])`** - log something at info level
+- **`log.debug([data][, ...args])`** - log something at debug level
+- **`log.trace([data][, ...args])`** - log something at trace level
+
+## The `log.is{level}Enabled()` function
+
+Intended string/s to log are expensive to generate outside of [util.format()](https://nodejs.org/api/util.html#util_util_format_format_args)? Check if level can be logged in the first place!!!
+
+```javascript
+const log = LoggerFactory.getLogger('app:something');
+// ...
+if (log.isTraceEnabled()) {
+  log.trace('Stats:\n%s', someHeavyStatistics.snapshot().prettyPrint());
+}
+```
+
+In the example above, `#snapshot()` and/or `#prettyPrint()` is expensive to execute; hence, checking if the log level is enabled **first**.
+
+- **`#isFatalEnabled()`** - check if fatal is enabled
+- **`#isErrorEnabled()`** - check if error is enabled
+- **`#isWarnEnabled()`** - check if warn is enabled
+- **`#isInfoEnabled()`** - check if info is enabled
+- **`#isDebugEnabled()`** - check if debug is enabled
+- **`#isTraceEnabled()`** - check if trace is enabled
+
 ## Configuration
 
 ### Environment Variables
 
-Here are the environment variables that can be set to configure `slf4j-like-logging`:
+Here are the environment variables that can be set to configure `slf4n-logging`:
 
 #### `LOG_LAYOUT`
 

@@ -38,10 +38,38 @@ module.exports = class Logger {
     return log(this, this.config.stream.out, Level.TRACE, message, ...parameters);
   }
 
+  isFatalEnabled() {
+    return isEnabled(this, Level.FATAL)
+  }
+
+  isErrorEnabled() {
+    return isEnabled(this, Level.ERROR)
+  }
+
+  isWarnEnabled() {
+    return isEnabled(this, Level.WARN)
+  }
+
+  isInfoEnabled() {
+    return isEnabled(this, Level.INFO)
+  }
+
+  isDebugEnabled() {
+    return isEnabled(this, Level.DEBUG)
+  }
+
+  isTraceEnabled() {
+    return isEnabled(this, Level.TRACE)
+  }
+
+}
+
+function isEnabled(logger, level) {
+  return logger.config.level.priority >= level.priority;
 }
 
 function log(logger, stream, level, message, ...parameters) {
-  if (logger.config.level.priority < level.priority) {
+  if (!isEnabled(logger, level)) {
     return Promise.resolve();
   }
   return new Promise
@@ -52,7 +80,7 @@ function log(logger, stream, level, message, ...parameters) {
         .replace(/\:error/g, extractError(logger.config.errorIndenter, parameters))
         .replace(/\:c\[level\]/g, logger.config.colors[level.label])
         .replace(/\:c\[reset\]/g, resolveResetValue(stream))
-        .replace(/\:message/g, util.format(message, ...parameters));
+        .replace(/\:message/g, !!message ? util.format(message, ...parameters) : '');
       write(stream, data, resolve, reject);
     })
     .catch(function (error) {
