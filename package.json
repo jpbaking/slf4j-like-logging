@@ -2,7 +2,7 @@
   "name": "slf4j-like-logging",
   "version": "1.0.0",
   "description": "Emulating Simple Logging Facade for Java (SLF4J)",
-  "main": "src/main/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha --recursive src/test"
   },
