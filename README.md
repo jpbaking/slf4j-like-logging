@@ -1,4 +1,6 @@
-# slf4j-like-logging
+# slf4n-logging
+
+## Simple Logging Facade for NodeJS
 
 Emulating Simple Logging Facade for Java (SLF4J)
 
@@ -10,15 +12,15 @@ Yes, logger functions' implementation for writing to streams won't be a blocker.
 
 Every log method returns a [bluebird `Promise`](https://www.npmjs.com/package/bluebird) -- for those that want to "wait" for logs to be written before proceding to next lines.
 
-_[slf4j-like-logging](https://github.com/jpbaking/slf4j-like-logging) by [jpbaking](https://github.com/jpbaking)_
+_[slf4n-logging](https://github.com/jpbaking/slf4n-logging) by [jpbaking](https://github.com/jpbaking)_
 
 ## Basic Usage
 
-Simply `require('slf4j-like-logging')` from your "main" (entrypoint) `.js` then all of other modules would get the global `LoggerFactory`.
+Simply `require('slf4n-logging')` from your "main" (entrypoint) `.js` then all of other modules would get the global `LoggerFactory`.
 
 Sample File #1: `app.js`
 ```javascript
-require('slf4j-like-logging');
+require('slf4n-logging');
 ```
 
 Sample File #2: `api/controller/health.js`
@@ -32,11 +34,11 @@ log.error('some error line', error);
 
 ## Safe Usage
 
-Some do not like adding anything to `global.*`. If you're one of those, you may use `require('slf4j-like-logging/safe')` instead:
+Some do not like adding anything to `global.*`. If you're one of those, you may use `require('slf4n-logging/safe')` instead:
 
 Sample File: `api/helpers/UltimateHelper.js`
 ```javascript
-const log = require('slf4j-like-logging/safe')('app:ultimate');
+const log = require('slf4n-logging/safe')('app:ultimate');
 // ...
 log.info('some info line');
 // ...
@@ -70,9 +72,9 @@ Sample `global.LoggerFactory` _(unsafe)_:
 ```javascript
 // logger factory
 // unsafe usage (`global.LoggerFactory` is set)
-require('slf4j-like-logging/json')(loggerConfig, false);
+require('slf4n-logging/json')(loggerConfig, false);
 // default is `false` for `safe` (second argument)
-require('slf4j-like-logging/json')(loggerConfig);
+require('slf4n-logging/json')(loggerConfig);
 
 // actual logger
 const log = LoggerFactory.getLogger('app:something');
@@ -85,7 +87,7 @@ log.error('some error line', error);
 Sample **safe** usage _(returns a `LoggerFactory`; same one that would've been set to `global.*`)_:
 ```javascript
 // logger factory
-const LoggerFactory = require('slf4j-like-logging/json')(loggerConfig, true);
+const LoggerFactory = require('slf4n-logging/json')(loggerConfig, true);
 
 // actual logger
 const log = LoggerFactory.getLogger('app:something');
@@ -99,7 +101,7 @@ log.fatal('some fatal line', error);
 
 ### Environment Variables
 
-Here are the environment variables that can be set to configure `slf4j-like-logging`:
+Here are the environment variables that can be set to configure `slf4n-logging`:
 
 #### `LOG_LAYOUT`
 
