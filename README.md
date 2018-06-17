@@ -14,7 +14,9 @@ Every log method returns a [bluebird `Promise`](https://www.npmjs.com/package/bl
 
 _[slf4n-logging](https://github.com/jpbaking/slf4n-logging) by [jpbaking](https://github.com/jpbaking)_
 
-## Basic Usage
+## How to use?
+
+### Basic Usage
 
 Simply `require('slf4n-logging')` from your "main" (entrypoint) `.js` then all of other modules would get the global `LoggerFactory`.
 
@@ -27,12 +29,17 @@ Sample File #2: `api/controller/health.js`
 ```javascript
 const log = LoggerFactory.getLogger('app:health');
 // ...
-log.debug('some debug line');
+log.debug('some debug line %s', aStringVariable);
+log.debug('some debug line %o', anObjectOrArray);
 // ...
 log.error('some error line', error);
 ```
 
-## Safe Usage
+#### Formatting in `log.{level}([data][, ...args])`
+
+As shown in the example above, syntax for log-level functions exactly the same as [`require('util').format(format[, ...args])`](https://nodejs.org/api/util.html#util_util_format_format_args) and [`console.log([data][, ...args])`](https://nodejs.org/api/console.html#console_console_log_data_args).
+
+### Safe Usage
 
 Some do not like adding anything to `global.*`. If you're one of those, you may use `require('slf4n-logging/safe')` instead:
 
@@ -45,7 +52,7 @@ log.info('some info line');
 log.warn('some warn line', error);
 ```
 
-## "Manual" Usage
+### "Manual" Usage
 
 Sample `loggerConfig` object:
 ```javascript
@@ -96,6 +103,55 @@ log.trace('some trace line');
 // ...
 log.fatal('some fatal line', error);
 ```
+
+## The `log.{level}([data][, ...args])` functions
+
+As described earlier, just use `log.{level}([data][, ...args])` functions very much like how you'd use [`console.log([data][, ...args])`](https://nodejs.org/api/console.html#console_console_log_data_args).
+
+```javascript
+const log = LoggerFactory.getLogger('app:something');
+// ...
+try {
+  log.trace('something trace %s', aString);
+  log.debug('something debug %o', anObject);
+  log.info('something info');
+  log.warn('something warn %d', aNumber);
+  // ...
+} catch (error) {
+  log.fatal('something fatal', error);
+  log.error('something error', error);
+}
+```
+
+Here's a list of available `log.{level}([data][, ...args])` functions:
+
+- **`log.fatal([data][, ...args])`** - log something at fatal level
+- **`log.error([data][, ...args])`** - log something at error level
+- **`log.warn([data][, ...args])`** - log something at warn level
+- **`log.info([data][, ...args])`** - log something at info level
+- **`log.debug([data][, ...args])`** - log something at debug level
+- **`log.trace([data][, ...args])`** - log something at trace level
+
+## The `log.is{level}Enabled()` function
+
+Intended string/s to log are expensive to generate outside of [util.format()](https://nodejs.org/api/util.html#util_util_format_format_args)? Check if level can be logged in the first place!!!
+
+```javascript
+const log = LoggerFactory.getLogger('app:something');
+// ...
+if (log.isTraceEnabled()) {
+  log.trace('Stats:\n%s', someHeavyStatistics.snapshot().prettyPrint());
+}
+```
+
+In the example above, `#snapshot()` and/or `#prettyPrint()` is expensive to execute; hence, checking if the log level is enabled **first**.
+
+- **`#isFatalEnabled()`** - check if fatal is enabled
+- **`#isErrorEnabled()`** - check if error is enabled
+- **`#isWarnEnabled()`** - check if warn is enabled
+- **`#isInfoEnabled()`** - check if info is enabled
+- **`#isDebugEnabled()`** - check if debug is enabled
+- **`#isTraceEnabled()`** - check if trace is enabled
 
 ## Configuration
 
