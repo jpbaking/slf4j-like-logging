@@ -117,6 +117,7 @@ Placeholders:
 - **`:pid`** - the process ID (PID) of running app
 - **`:message`** - the message to be logged
 - **`:error`** - to show/print error and/or `error.stack`
+- **`:[n]`** - new-line
 
 Color placeholders:
 
@@ -200,7 +201,7 @@ Here are the valid colors:
 
 > **"Manual" Usage** JSON Path: `<root>.errorIndenter`
 
-Used to indent error stack. "`    | `" _(the default)_ would appear like:
+Used to indent error stack. "`    | `" _(the default; four spaces, a pipe, then a space)_ would appear like:
 
 ![](./.readme/ss_indenter.png)
 
