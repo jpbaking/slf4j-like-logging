@@ -55,8 +55,7 @@ function log(logger, stream, level, message, ...parameters) {
         .replaceAll(':error', extractError(logger.config.errorIndenter, parameters))
         .replaceAll(':c[level]', logger.config.colors[level.label])
         .replaceAll(':c[reset]', resolveResetValue(stream))
-        .replaceAll(':message', util.format(message, ...parameters))
-        .concat('\n');
+        .replaceAll(':message', util.format(message, ...parameters));
       write(stream, data, resolve, reject);
     })
     .catch(function (error) {

@@ -15,16 +15,15 @@ const _ = require('../utils/SafeGet');
 const replaceAll = require('../utils/ReplaceAll');
 
 // local constants
-const DEFAULT_LAYOUT = ':timestamp :c[bold]:c[level][:level]:c[reset] :c[bold]:c[white]:logger:c[reset]:c[dim]@:hostname (:pid):c[reset]: :message:c[level]:error';
+const DEFAULT_LAYOUT = ':timestamp :c[bold]:c[level][:level]:c[reset] :c[bold]:c[white]:logger:c[reset]:c[dim]@:hostname (:pid):c[reset] - :message:c[level]:error';
 
 module.exports = class LoggerFactory {
 
   constructor(config) {
-    const isColorEnabled = toBoolean(() => config.colors.enabled, 'true');
+    const isColorEnabled = toBoolean(() => config.colors.enabled, true);
     const stream = getStreams(config);
     this.config = {
       layout: initializeLayout(config, isColorEnabled, stream),
-      errorIndenter: _(() => config.errorIndenter, '    | '),
       level: Level[_(() => config.level, 'INFO').toUpperCase()] || Level.INFO,
       colors: {
         enabled: isColorEnabled,
@@ -35,6 +34,7 @@ module.exports = class LoggerFactory {
         DEBUG: toLevelColor(config, 'debug', 'green', isColorEnabled, stream),
         TRACE: toLevelColor(config, 'trace', 'cyan', isColorEnabled, stream)
       },
+      errorIndenter: _(() => config.errorIndenter, '    | '),
       stream: stream,
       terminateOnFail: toBoolean(() => config.terminateOnFail, true) ? terminate : doNothing
     }
@@ -71,9 +71,13 @@ function getStreams(config) {
 }
 
 function initializeLayout(config, isColorEnabled, stream) {
-  const layout = ':c[reset]'.concat(_(() => config.layout, DEFAULT_LAYOUT), ':c[reset]')
+  let layout = ':c[reset]'.concat(_(() => config.layout, DEFAULT_LAYOUT))
     .replaceAll(':hostname', os.hostname())
     .replaceAll(':pid', process.pid);
+  if (layout.indexOf(':error') > -1) {
+    layout = `${layout.replaceAll(':error', '')}:error`;
+  }
+  layout = `${layout}:c[reset]\n`;
   return isColorEnabled && !!stream.out.isTTY && !!stream.err.isTTY ?
     doColor(layout) : noColor(layout);
 }
