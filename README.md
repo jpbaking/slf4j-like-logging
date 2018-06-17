@@ -288,8 +288,8 @@ Dictates which stream (`stdout` and/or `stderr`) to route log writing.
 
 Basically, whether or not to terminate running app if writing logs into stream fails.
 
-- **`true`** - colors (`:c[*]`) will be printed
-- **`false`** - no color will be printed
+- **`true`** - duh?
+- **`false`** - duh?
 
 Default is `true` if left unset.
 
