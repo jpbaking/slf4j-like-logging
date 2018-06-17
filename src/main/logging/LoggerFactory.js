@@ -12,7 +12,6 @@ const doNothing = require('../utils/DoNothing');
 
 // functions
 const _ = require('../utils/SafeGet');
-const replaceAll = require('../utils/ReplaceAll');
 
 // local constants
 const DEFAULT_LAYOUT = ':timestamp :c[bold]:c[level][:level]:c[reset] :c[bold]:c[white]:logger:c[reset]:c[dim]@:hostname (:pid):c[reset] - :message:c[level]:error';
@@ -72,10 +71,11 @@ function getStreams(config) {
 
 function initializeLayout(config, isColorEnabled, stream) {
   let layout = ':c[reset]'.concat(_(() => config.layout, DEFAULT_LAYOUT))
-    .replaceAll(':hostname', os.hostname())
-    .replaceAll(':pid', process.pid);
+    .replace(/\:hostname/g, os.hostname())
+    .replace(/\:pid/g, process.pid)
+    .replace(/\:\[n\]/g, '\n');
   if (layout.indexOf(':error') > -1) {
-    layout = `${layout.replaceAll(':error', '')}:error`;
+    layout = `${layout.replace(/\:error/g, '')}:error`;
   }
   layout = `${layout}:c[reset]\n`;
   return isColorEnabled && !!stream.out.isTTY && !!stream.err.isTTY ?
@@ -96,27 +96,27 @@ function noColor(string) {
 
 function doColor(string) {
   return string
-    .replaceAll(':c[reset]', Colors.RESET)
-    .replaceAll(':c[bold]', Colors.BOLD)
-    .replaceAll(':c[dim]', Colors.DIM)
-    .replaceAll(':c[underscore]', Colors.UNDERSCORE)
-    .replaceAll(':c[blink]', Colors.BLINK)
-    .replaceAll(':c[reverse]', Colors.REVERSE)
-    .replaceAll(':c[hidden]', Colors.HIDDEN)
-    .replaceAll(':c[black]', Colors.FG.BLACK)
-    .replaceAll(':c[red]', Colors.FG.RED)
-    .replaceAll(':c[green]', Colors.FG.GREEN)
-    .replaceAll(':c[yellow]', Colors.FG.YELLOW)
-    .replaceAll(':c[blue]', Colors.FG.BLUE)
-    .replaceAll(':c[magenta]', Colors.FG.MAGENTA)
-    .replaceAll(':c[cyan]', Colors.FG.CYAN)
-    .replaceAll(':c[white]', Colors.FG.WHITE)
-    .replaceAll(':c[bg.black]', Colors.BG.BLACK)
-    .replaceAll(':c[bg.red]', Colors.BG.RED)
-    .replaceAll(':c[bg.green]', Colors.BG.GREEN)
-    .replaceAll(':c[bg.yellow]', Colors.BG.YELLOW)
-    .replaceAll(':c[bg.blue]', Colors.BG.BLUE)
-    .replaceAll(':c[bg.magenta]', Colors.BG.MAGENTA)
-    .replaceAll(':c[bg.cyan]', Colors.BG.CYAN)
-    .replaceAll(':c[bg.white]', Colors.BG.WHITE);
+    .replace(/\:c\[reset\]/g, Colors.RESET)
+    .replace(/\:c\[bold\]/g, Colors.BOLD)
+    .replace(/\:c\[dim\]/g, Colors.DIM)
+    .replace(/\:c\[underscore\]/g, Colors.UNDERSCORE)
+    .replace(/\:c\[blink\]/g, Colors.BLINK)
+    .replace(/\:c\[reverse\]/g, Colors.REVERSE)
+    .replace(/\:c\[hidden\]/g, Colors.HIDDEN)
+    .replace(/\:c\[black\]/g, Colors.FG.BLACK)
+    .replace(/\:c\[red\]/g, Colors.FG.RED)
+    .replace(/\:c\[green\]/g, Colors.FG.GREEN)
+    .replace(/\:c\[yellow\]/g, Colors.FG.YELLOW)
+    .replace(/\:c\[blue\]/g, Colors.FG.BLUE)
+    .replace(/\:c\[magenta\]/g, Colors.FG.MAGENTA)
+    .replace(/\:c\[cyan\]/g, Colors.FG.CYAN)
+    .replace(/\:c\[white\]/g, Colors.FG.WHITE)
+    .replace(/\:c\[bg.black\]/g, Colors.BG.BLACK)
+    .replace(/\:c\[bg.red\]/g, Colors.BG.RED)
+    .replace(/\:c\[bg.green\]/g, Colors.BG.GREEN)
+    .replace(/\:c\[bg.yellow\]/g, Colors.BG.YELLOW)
+    .replace(/\:c\[bg.blue\]/g, Colors.BG.BLUE)
+    .replace(/\:c\[bg.magenta\]/g, Colors.BG.MAGENTA)
+    .replace(/\:c\[bg.cyan\]/g, Colors.BG.CYAN)
+    .replace(/\:c\[bg.white\]/g, Colors.BG.WHITE);
 }

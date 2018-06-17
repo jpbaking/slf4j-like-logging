@@ -7,13 +7,10 @@ const Colors = require('./Colors');
 const doNothing = require('../utils/DoNothing');
 const Promise = require('bluebird');
 
-// functions
-const replaceAll = require('../utils/ReplaceAll');
-
 module.exports = class Logger {
 
   constructor(loggerName, config) {
-    this.layout = config.layout.replaceAll(':logger', loggerName);
+    this.layout = config.layout.replace(/\:logger/g, loggerName);
     this.config = config;
   }
 
@@ -50,12 +47,12 @@ function log(logger, stream, level, message, ...parameters) {
   return new Promise
     (function (resolve, reject) {
       const data = logger.layout
-        .replaceAll(':timestamp', new Date().toISOString())
-        .replaceAll(':level', level.label)
-        .replaceAll(':error', extractError(logger.config.errorIndenter, parameters))
-        .replaceAll(':c[level]', logger.config.colors[level.label])
-        .replaceAll(':c[reset]', resolveResetValue(stream))
-        .replaceAll(':message', util.format(message, ...parameters));
+        .replace(/\:timestamp/g, new Date().toISOString())
+        .replace(/\:level/g, level.label)
+        .replace(/\:error/g, extractError(logger.config.errorIndenter, parameters))
+        .replace(/\:c\[level\]/g, logger.config.colors[level.label])
+        .replace(/\:c\[reset\]/g, resolveResetValue(stream))
+        .replace(/\:message/g, util.format(message, ...parameters));
       write(stream, data, resolve, reject);
     })
     .catch(function (error) {
